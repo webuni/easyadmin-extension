@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  php:
+    image: "minidocks/php:${PHP_VERSION:-7.3}"
+    volumes:
+      - .:$PWD:cached
+    working_dir: $PWD
+    command: sshd
+
+  php-tools:
+    image: "minidocks/php-tools:${PHP_VERSION:-7.3}"
+    volumes:
+      - .:$PWD:cached
+    working_dir: $PWD
+    command: sshd

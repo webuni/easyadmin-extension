@@ -1,0 +1,51 @@
+{
+    "name": "webuni/easyadmin-extensions",
+    "description": "Extensions for EasyAdmin 2 and 3",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Hasoň",
+            "email": "martin.hason@gmail.com"
+        },
+        {
+            "name": "Webuni s.r.o.",
+            "homepage": "https://www.webuni.cz"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "easycorp/easyadmin-bundle": "^2.0",
+        "doctrine/inflector": "^1.0"
+    },
+    "require-dev": {
+        "webuni/symfony-extensions": "^1.0@dev"
+    },
+    "suggest": {
+        "webuni/symfony-extensions": "Support for chain messages in translations"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webuni\\EasyAdminExtensions\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webuni\\EasyAdminExtensions\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "cs": "./run cs",
+        "cs-check": "./run cs --dry-run",
+        "analyse": "./run analyse",
+        "tests": "./run tests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
