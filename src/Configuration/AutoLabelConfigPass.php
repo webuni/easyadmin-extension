@@ -36,7 +36,7 @@ class AutoLabelConfigPass implements ConfigPassInterface
                 }
 
                 /* @see \EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass::doNormalizeActionsConfig() */
-                foreach ($config['actions'] as $actionName => $actionConfig) {
+                foreach ($config['actions'] ?? [] as $actionName => $actionConfig) {
                     if (isset($actionConfig['label']) && in_array($actionConfig['label'], ['action.'.$actionName, $this->humanizeString($actionName)])) {
                         $config['actions'][$actionName]['label'] = $this->createMessage(Inflector::tableize($entityName.'.action.'.$actionName), 'action.'.$actionName, $actionConfig['label']);
                     }
