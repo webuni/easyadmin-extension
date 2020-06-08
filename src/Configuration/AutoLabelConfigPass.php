@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Webuni\EasyAdminExtensions\Configuration;
 
-use Webuni\SymfonyExtensions\Translation\ChainMessages;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\Inflector;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface;
+use Webuni\SymfonyExtensions\Translation\ChainMessages;
 
 class AutoLabelConfigPass implements ConfigPassInterface
 {
@@ -37,7 +37,7 @@ class AutoLabelConfigPass implements ConfigPassInterface
 
                 /* @see \EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass::doNormalizeActionsConfig() */
                 foreach ($config['actions'] ?? [] as $actionName => $actionConfig) {
-                    if (isset($actionConfig['label']) && in_array($actionConfig['label'], ['action.'.$actionName, $this->humanizeString($actionName)])) {
+                    if (isset($actionConfig['label']) && \in_array($actionConfig['label'], ['action.'.$actionName, $this->humanizeString($actionName)])) {
                         $config['actions'][$actionName]['label'] = $this->createMessage(Inflector::tableize($entityName.'.action.'.$actionName), 'action.'.$actionName, $actionConfig['label']);
                     }
                 }

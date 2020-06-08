@@ -15,8 +15,8 @@
     ],
     "require": {
         "php": "^7.1",
-        "easycorp/easyadmin-bundle": "^2.0",
-        "doctrine/inflector": "^1.0"
+        "easycorp/easyadmin-bundle": "^2.0|^3.0",
+        "doctrine/inflector": "^1.0|^2.0"
     },
     "require-dev": {
         "webuni/symfony-extensions": "^1.0@dev"
