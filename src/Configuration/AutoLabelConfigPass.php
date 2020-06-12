@@ -14,15 +14,24 @@ declare(strict_types=1);
 
 namespace Webuni\EasyAdminExtensions\Configuration;
 
-use Doctrine\Inflector\Inflector;
+use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface;
 use Webuni\SymfonyExtensions\Translation\ChainMessages;
 
 class AutoLabelConfigPass implements ConfigPassInterface
 {
+    private $inflector;
+
+    public function __construct()
+    {
+        $this->inflector = class_exists(InflectorFactory::class) ? InflectorFactory::create()->build() : new Inflector();
+    }
+
     public function process(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $className = $this->humanizeString(substr(strrchr($entityConfig['class'], '\\'), 1));
             foreach (['form', 'edit', 'list', 'new', 'search', 'show', 'delete'] as $view) {
                 if (!isset($backendConfig['entities'][$entityName][$view])) {
                     continue;
@@ -31,14 +40,17 @@ class AutoLabelConfigPass implements ConfigPassInterface
                 $config = &$backendConfig['entities'][$entityName][$view];
                 if (!isset($config['title'])) {
                     /** @see \EasyCorp\Bundle\EasyAdminBundle\Configuration\ViewConfigPass::processPageTitleConfig() and templates */
-                    $title = Inflector::tableize($entityName.'.'.$view.'.page_title');
-                    $config['title'] = $this->createMessage($title, $backendConfig[$view]['title'] ?? ['EasyAdminBundle' => $view.'.page_title']);
+                    $titleEntityName = $this->inflector->tableize($entityName.'.'.$view.'.page_title');
+                    $titleClassName = $this->inflector->tableize($className.'.'.$view.'.page_title');
+                    $config['title'] = $this->createMessage($titleEntityName, $titleClassName, $backendConfig[$view]['title'] ?? ['EasyAdminBundle' => $view.'.page_title']);
                 }
 
                 /* @see \EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass::doNormalizeActionsConfig() */
                 foreach ($config['actions'] ?? [] as $actionName => $actionConfig) {
                     if (isset($actionConfig['label']) && \in_array($actionConfig['label'], ['action.'.$actionName, $this->humanizeString($actionName)])) {
-                        $config['actions'][$actionName]['label'] = $this->createMessage(Inflector::tableize($entityName.'.action.'.$actionName), 'action.'.$actionName, $actionConfig['label']);
+                        $labelEntityName = $this->inflector->tableize($entityName.'.action.'.$actionName);
+                        $labelClassName = $this->inflector->tableize($className.'.action.'.$actionName);
+                        $config['actions'][$actionName]['label'] = $this->createMessage($labelEntityName, 'action.'.$actionName, $actionConfig['label']);
                     }
                 }
 
@@ -55,8 +67,9 @@ class AutoLabelConfigPass implements ConfigPassInterface
                         continue;
                     }
 
-                    $label = Inflector::tableize($entityName.'.'.$fieldConfig['property']);
-                    $config['fields'][$fieldName]['label'] = $this->createMessage($label, $fieldConfig['property']);
+                    $labelEntityName = $this->inflector->tableize($entityName.'.'.$fieldConfig['property']);
+                    $labelClassName = $this->inflector->tableize($entityName.'.'.$fieldConfig['property']);
+                    $config['fields'][$fieldName]['label'] = $this->createMessage($labelEntityName, $labelClassName, $fieldConfig['property']);
                 }
             }
         }
